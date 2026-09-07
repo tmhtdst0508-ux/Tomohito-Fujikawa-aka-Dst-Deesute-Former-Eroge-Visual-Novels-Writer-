@@ -73,6 +73,8 @@ class TabFavorites(QWidget):
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.table.itemSelectionChanged.connect(self.on_row_selected)
+        self.table.cellClicked.connect(self.on_cell_clicked)
+        self.table.currentCellChanged.connect(self.on_current_cell_changed)
         splitter.addWidget(self.table)
 
         # Detail / Edit Box
@@ -190,19 +192,49 @@ class TabFavorites(QWidget):
             self.table.setItem(row, 1, item_desc)
             self.table.setItem(row, 2, item_prompt)
 
-    def on_row_selected(self):
-        selected_rows = list(set([item.row() for item in self.table.selectedItems()]))
-        if len(selected_rows) == 1:
-            row = selected_rows[0]
+    def _update_detail_from_row(self, row: int):
+        """Immediately displays description and prompt of the specified row into details fields."""
+        if 0 <= row < self.table.rowCount():
+            desc = ""
+            prompt = ""
             item_no = self.table.item(row, 0)
             if item_no:
                 fav = item_no.data(Qt.UserRole)
-                if fav:
-                    self.txt_desc.setText(fav.get("description", ""))
-                    self.txt_prompt.setPlainText(fav.get("prompt", ""))
-        else:
-            self.txt_desc.clear()
-            self.txt_prompt.clear()
+                if isinstance(fav, dict):
+                    desc = fav.get("description", "")
+                    prompt = fav.get("prompt", "")
+            if not desc:
+                item_desc = self.table.item(row, 1)
+                if item_desc:
+                    desc = item_desc.text()
+            if not prompt:
+                item_pr = self.table.item(row, 2)
+                if item_pr:
+                    prompt = item_pr.text()
+
+            self.txt_desc.setText(desc)
+            self.txt_prompt.setPlainText(prompt)
+
+    def on_cell_clicked(self, row: int, col: int):
+        """Immediately updates detail fields on clicking any cell in the table."""
+        self._update_detail_from_row(row)
+
+    def on_current_cell_changed(self, currentRow: int, currentColumn: int, previousRow: int, previousColumn: int):
+        """Immediately updates detail fields when navigation changes the current cell."""
+        if currentRow >= 0:
+            self._update_detail_from_row(currentRow)
+
+    def on_row_selected(self):
+        selected_rows = list(set([item.row() for item in self.table.selectedItems()]))
+        if len(selected_rows) == 1:
+            self._update_detail_from_row(selected_rows[0])
+        elif len(selected_rows) == 0:
+            curr = self.table.currentRow()
+            if curr >= 0:
+                self._update_detail_from_row(curr)
+            else:
+                self.txt_desc.clear()
+                self.txt_prompt.clear()
 
     def save_fav_history(self):
         """Saves a copy of current favorites for Undo."""
@@ -429,8 +461,7 @@ class TabFavorites(QWidget):
             if self.table.item(row, 0):
                 self.table.scrollToItem(self.table.item(row, 0))
             self.flash_row(row)
-            self.txt_desc.clear()
-            self.txt_prompt.clear()
+            self._update_detail_from_row(row)
             QMessageBox.information(
                 self,
                 "更新完了 / Success",

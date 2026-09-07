@@ -22,7 +22,7 @@ I am Tomohito Fujikawa (aka "D.S.T." or "Deeste"). I am a writer who has spent a
 That is exactly why I forged this tool for my comrades (read: you degenerates). **KENZEN SeaArt Helper** is the ultimate standalone cockpit for AI mages wielding SeaArt and Stable Diffusion.
 
 **How to Download & Launch**
-1. Download `KENZEN_SeaArt_Helper_v5.1.0.zip` from the GitHub Releases.
+1. Download `KENZEN_SeaArt_Helper_v5.1.1.zip` from the GitHub Releases.
 2. Extract the ZIP file to any local folder on your PC (e.g. `C:\Tools\KENZEN_SeaArt_Helper`). *(Notice: Do NOT run directly from Cloud sync folders like OneDrive or Dropbox!)*
 3. Double-click `KENZEN_SeaArt_Helper.exe` to launch immediately. No installation or Excel setup required!
 
@@ -79,17 +79,18 @@ The story-driven adult AI CG collections created using KENZEN SeaArt Helper.
 
  ---
 <a id = "whatsnew"></a>
-## 🚀 Release v5.1.0: Wild West Update! 🤠🌵✨
+## 🚀 Release v5.1.1: Precision & Default Presets Update! 🎯🔄✨
 
-* 🤠 **西部劇関連タグの大量追加 / New Western Era Tags:** 保安官 (sheriff)、リボルバー・二丁拳銃 (revolver, dual revolvers)、レザーチャップス (leather chaps)、カウガールブーツ (cowgirl boots)、木造酒場・宿舎 (wooden room, log cabin)、指名手配ポスター (wanted poster) など、フロンティア・西部劇の世界観を構築する全43タグを新規収録！
-* 📋 **ブラウザからのプレーンテキスト貼り付けバグ修正 / Clean Plain-Text Paste:** ブラウザや外部エディタからプロンプトを右クリックまたは `Ctrl+V` で貼り付ける際、HTML書式や不要な装飾スタイルを完全排除し、強制的にプレーンテキストとして貼り付けられるように修正！
-* ⚡ **LoRAタグ一発挿入ショートカット（Ctrl+Shift+L）/ Direct LoRA Shortcut:** 全タブ共通で `Ctrl+Shift+L` を押すだけで、LoRAプレビュー欄のタグをCockpit末尾へ即座に挿入し、自動でCockpitタブへ画面切り替え＆エディタにフォーカス。プレビュー空欄時の警告ダイアログおよび重複タグの自動スキップも完備！
-
+* 🔄 **Default Preset Auto-Deploy & "Call Default" Button / デフォルトプリセット自動展開 ＆ 復元ボタン:** Presets designated via "⭐ Set as Default" across Positive, Negative, and LoRA tabs now automatically deploy to active lists and previews upon application launch! A dedicated "🔄 Call Default" button has also been added to all three tabs to instantly restore or apply default presets on demand.
+* 🛡️ **Comma-Containing Tag Wildcard Protection / カンマ付きタグのワイルドカード保護:** Fixed an issue where dynamic prompts formatting (`{}`) erroneously split single tags containing commas (such as `ass up, face down`) into pipe-separated fragments (`{ass up | face down}`). Single and multi-tag selections are now accurately preserved.
+* 🎛️ **Weight Pulldown Checkbox Interlocking / 重み付けプルダウン連動修正:** Fixed an issue where the weight pulldown was accessible even when the "Weight:" checkbox was disabled. It is now strictly locked and grayed out until the checkbox is explicitly checked.
+* 📋 **Favorites Instant Detail Preview / お気に入り選択時の即時反映:** Clicking, selecting, or navigating rows in the Favorites tab now immediately reflects the Description and Prompt in the detail panel without latency.
+* ⚡ **Global Shortcuts & Focus Transition / ショートカット＆フォーカス自動遷移:** Full integration of `Ctrl+Shift+L` for instant LoRA insertion into Cockpit tail with automatic tab switching and editor focus, alongside `Ctrl+Shift+P` for positive tags.
 ---
 
-# ■ KENZEN SeaArt Helper Manual (v5.1.0)
+# ■ KENZEN SeaArt Helper Manual (v5.1.1)
 
-_Prefer offline reading? [Download the PDF Manual here!](docs/KENZEN_SeaArt_Helper_Manual_v5.1.0.pdf)_
+_Prefer offline reading? [Download the PDF Manual here!](docs/KENZEN_SeaArt_Helper_Manual_v5.1.1.pdf)_
 
 **TL;DR:** This is a standalone desktop application specialized in building, weighting, and managing NSFW generation prompts for SeaArt & Stable Diffusion. Includes SQLite-backed 41-category matrix, LoRA managers, and AI Gacha alchemy powered by Google Gemini API.
 
@@ -131,8 +132,8 @@ The central command center for assembling, tweaking, and finalizing your generat
 
 * **Top App Title & Matrix Launcher:** Displays tool status and a button to re-summon the Dictionary Matrix window at any time.
 * **Main Prompt Editor :** Free-form editing canvas with real-time feedback and automatic comma formatting.
-* **Weight Controls (0.5 – 1.5):** Select any text block and click **Apply Weight (tag:w)** to wrap it into `(tag:weight)`. Toggle **Enable Weight** for automatic single-tag weighting upon addition.
-* **Wrap Dynamic Prompts (`{A | B | C}`):** Instantly formats comma-separated tokens into Dynamic Prompts syntax `{optionA | optionB | optionC}` (or unwraps back).
+* **Weight Controls (0.5 – 1.5):** Select any text block and click **Apply Weight (tag:w)** to wrap it into `(tag:weight)`. Toggle **Enable Weight** for automatic single-tag weighting upon addition (weight pulldown is strictly locked until the checkbox is enabled).
+* **Wrap Dynamic Prompts (`{A | B | C}`):** Instantly formats comma-separated tokens into Dynamic Prompts syntax `{optionA | optionB | optionC}` (or unwraps back), with robust preservation for single tags that inherently contain commas (such as `ass up, face down`).
 * **Sort Prompts (41 Categories & Smart Hierarchy):** Re-organizes chaotic prompt strings strictly according to Base Positive rules, LoRA triggers, and the 41 database categories.
   * **Selection Range Sort:** When text is highlighted/selected in the editor, clicking **Sort Prompts** sorts **ONLY the selected text range** by database category order, replacing it in-place without altering surrounding prompts.
   * **Multi-BREAK & LoRA Trigger Relocation:** When sorting across entire prompts containing `BREAK` syntax, registered LoRA triggers (even if added after BREAK or separated without commas) are automatically extracted and relocated into the **1st block immediately following Base Positive quality tags** (Score 0.5), while `<lora:...>` blocks are neatly positioned at the prompt tail.
@@ -148,14 +149,14 @@ The central command center for assembling, tweaking, and finalizing your generat
 <a id = "en_2-2"></a>
 ### 2-2. "Positive" Tab
 
-![Positive_tab](images/Positive_tab_20260823.jpg)
+![Positive_tab](images/Positive_tab_20260907.jpg)
 
 Manage and deploy your standard positive quality boosters.
 
 * **Dual Listbox Layout:** Manage your library in the **Stock** listbox on the left, and curate active tags in the **Applied** listbox on the right.
 * **Bulk Import:** Paste raw comma-separated prompt dumps to strip brackets, clean weights, and extract clean tokens into your stock.
 * **Selection Preview & Reordering:** Live preview reflecting selected items in the Applied list, with dedicated Up/Down reordering controls.
-* **Preset Management & Instant Live Preview:** Save named Positive presets and assign a startup **Default Preset**. Selecting any preset from the dropdown automatically populates the Applied list, **selects all items immediately**, and outputs the full comma-separated prompt to the Preview Box for instant dispatch (`Ctrl+Shift+P`) without manual re-selection. Includes strict case-insensitive duplicate prevention when adding tags to stock.
+* **Preset Management & Auto-Deploy with 🔄 Call Default:** Save named Positive presets and assign a startup **Default Preset** via **⭐ Set as Default** to automatically deploy them on application launch. Click **🔄 Call Default** at any time to instantly restore or apply your default preset. Selecting any preset from the dropdown automatically populates the Applied list, **selects all items immediately**, and outputs the full comma-separated prompt to the Preview Box for instant dispatch (`Ctrl+Shift+P`) without manual re-selection. Includes strict case-insensitive duplicate prevention when adding tags to stock.
 * **🚀 Send Applied Tags to Cockpit Beginning (`Ctrl+Shift+P`):** Automatically injects the applied positive tags to the *very beginning* of the Cockpit prompt with strict duplicate detection.
 
 ---
@@ -163,11 +164,11 @@ Manage and deploy your standard positive quality boosters.
 <a id = "en_2-3"></a>
 ### 2-3. "Negative" Tab
 
-![Negative_tab](images/Negative_tab_20260823.jpg)
+![Negative_tab](images/Negative_tab_20260907.jpg)
 
 Manage your essential negative blacklist prompts.
 
-* **Dual Listbox (Stock & Applied) with Auto-Preview Presets:** Mirroring the Positive tab, curate active negative tags seamlessly. Selecting a Negative preset instantly populates the Applied list, selects all items, and generates the active preview for one-click clipboard copying. Duplicate stock tags are automatically skipped.
+* **Dual Listbox (Stock & Applied) with Auto-Deploy & 🔄 Call Default:** Mirroring the Positive tab, curate active negative tags seamlessly. Designated default presets automatically deploy upon application launch, and can be restored at any time via **🔄 Call Default**. Selecting any Negative preset instantly populates the Applied list, selects all items, and generates the active preview for one-click clipboard copying. Duplicate stock tags are automatically skipped.
 * **Negative Weighting (1.0 – 1.5):** Apply fine-tuned emphasis weights directly to negative tokens within the Preview box.
 * **LoRA Negative Receiver:** Direct bridge receiving recommended negative tags dispatched from the LoRA tab.
 * **Direct Clipboard Copy:** Copies sanitized negative tag chains straight to your clipboard.
@@ -177,7 +178,7 @@ Manage your essential negative blacklist prompts.
 <a id = "en_2-4"></a>
 ### 2-4. "LoRA" Tab (The LoRA Forge & Vault)
 
-![LoRA_tab](images/LoRA_tab_20260823.jpg)
+![LoRA_tab](images/LoRA_tab_20260907.jpg)
 
 Complete visual architecture for LoRA integration and trigger word management.
 
@@ -187,6 +188,7 @@ Complete visual architecture for LoRA integration and trigger word management.
 * **Automatic File Hash Extractor:** Browse any `.safetensors` file to automatically compute its short SHA-256 hash (10 characters) and auto-fill model names.
 * **Trigger Selection & Individual Weighting (1.0 – 1.5):** Selectively toggle registered trigger keywords and apply custom weights upon wrapping.
 * **Wrap with Name / Wrap with Hash:** Format triggers into `<lora:name:weight>` or `<lora:hash:weight>` tailored for SeaArt or SD WebUI in the dedicated preview.
+* **LoRA Presets with ⭐ Set as Default & 🔄 Call Default:** Save favorite LoRA combinations as named presets. Use **⭐ Set as Default** to automatically load them into preview on startup, and click **🔄 Call Default** to restore anytime.
 * **Preview Controls:**
   * **Remove LoRA:** Intelligently extracts and deletes a specific LoRA and its related triggers from the preview box without destroying other tags.
   * **Forget LoRA:** Completely clears all input fields, checkboxes, and preview for a fresh start.
@@ -201,7 +203,7 @@ Complete visual architecture for LoRA integration and trigger word management.
 
 Save, search, curate, and export your masterpiece prompts.
 
-* **Master Table & Search Filter:** Displays saved entries with numbered index, Description, and Full Prompt. Instant real-time keyword search across titles and prompts.
+* **Master Table & Instant Real-Time Preview:** Displays saved entries with numbered index, Description, and Full Prompt. Real-time keyword search across titles and prompts. Selecting or navigating table rows immediately displays description and prompt details without delay.
 * **Splitter Detail & Edit Pane with 🧹 Clear Input:** Live text fields for adjusting Descriptions and Prompts, with **Pull from Cockpit** integration. Features a dedicated **🧹 Clear Input** button to clear editing fields without affecting saved database records. Protected with a 50-entry cap and normalized duplicate prompt prevention.
 * **Add, Update, Reorder & Undo:** Duplicate prevention on addition, single-row update, Up/Down reordering, and dedicated **Undo Fav** protection.
 * **Mobile JSON Export:** Export favorites directly into mobile-ready JSON for on-the-go browsing.
@@ -291,7 +293,7 @@ See [LICENSE-DATA.md](LICENSE-DATA.md) for details.
 だからこそ、同志たち（と書いて「お前等」と読む）のためにこのツールを錬成しました。**KENZEN SeaArt Helper**は、SeaArtとStable Diffusionを駆使するAI術師のための究極のスタンドアロン・コックピットです。
 
 **ダウンロードと起動方法**
-1. GitHubのReleasesページから `KENZEN_SeaArt_Helper_v5.1.0.zip` をダウンロードします。
+1. GitHubのReleasesページから `KENZEN_SeaArt_Helper_v5.1.1.zip` をダウンロードします。
 2. PC上の任意のローカルフォルダ（例：`C:\Tools\KENZEN_SeaArt_Helper`）にZIPを解凍します。（※OneDriveやDropbox等のクラウド同期フォルダ直下には置かないでください）
 3. フォルダ内の `KENZEN_SeaArt_Helper.exe` をダブルクリックするだけで即座に起動します。Excelのインストールやマクロの許可設定は一切不要です！
 
@@ -348,17 +350,18 @@ KENZEN SeaArt Helperを使用して制作した、物語連動型AI成人向けC
  - [5. ライセンス](#ja_5)
 
 <a id = "whatsnew_jp"></a>
-## 🚀 【v5.1.0 リリース！】: 西部劇アップデート！🤠🌵✨
+## 🚀 【v5.1.1 リリース！】: プリセット自動展開＆高精度デバッグアップデート！🎯🔄✨
 
-* 🤠 **西部劇関連タグの大量追加:** 保安官、リボルバー（二丁拳銃）、レザーチャップス、カウガールブーツ、木造建築・ログハウス、指名手配ポスターなど、ワイルドウエストの世界観を完璧に演出できる最新タグ（全43件）をデータベースへ新規追加！
-* 📋 **ブラウザからのプレーンテキスト貼り付けバグ修正:** ブラウザや外部エディタからプロンプトを右クリックまたは `Ctrl+V` で貼り付ける際、不要なHTMLタグやフォント書式を完全排除し、純粋なプレーンテキストとして安全に挿入されるようバグフィクス！
-* ⚡ **LoRAのショートカットキーによる一発挿入機能の追加:** 全タブ共通で「`Ctrl+Shift+L`」を押すだけで、LoRAプレビュー欄のタグ群をCockpitの末尾へ即時挿入し、自動でCockpitタブへ遷移してエディタにフォーカス。プレビュー空欄時の注意ダイアログや重複タグの自動スキップも完備！
-
+* 🔄 **デフォルトプリセットの自動展開＆「🔄 Call Default」ボタン新設:** Positive、Negative、LoRA の各タブにおいて、「⭐ Set as Default」で設定したプリセットがアプリ起動時に自動展開されるようになりました！さらに、いつでもワンクリックでデフォルト設定を復元・展開できる「🔄 Call Default」ボタンを全3タブに追加。LoRAタブにも「⭐ Set as Default」を新設しました。
+* 🛡️ **カンマを含むタグのワイルドカード（`{}`）保護修正:** `ass up, face down` のように内部にカンマを含む単一タグを `{}` で括った際、カンマで機械的に分割されてパイプ `|`（`{ass up | face down}`）に化けてしまう不具合を解消。単一・複数選択時ともに正確に保護・展開されます。
+* 🎛️ **Cockpit 重み付けプルダウンのチェックボックス連動修正:** 「Weight:」チェックボックスがオフの時でも重み付けプルダウンが操作できてしまっていた問題を修正し、チェック時のみ有効化（オフ時はグレーアウト）されるよう連動を徹底。
+* 📋 **Favorites タブの選択時即時反映:** お気に入り一覧の行をクリック・選択・キー移動した際、詳細欄（説明・プロンプト）に即座に内容が反映されるよう操作感を大幅改善。
+* ⚡ **ショートカットの利便性強化:** 全タブ共通で「`Ctrl+Shift+L`」を押すだけでLoRAプレビュー欄のタグをCockpit末尾へ即座に挿入し、Cockpitタブへの自動画面切り替え＆エディタへのフォーカス移動を完備。
 ---
 
-# ■ KENZEN SeaArt Helper マニュアル（v5.1.0）
+# ■ KENZEN SeaArt Helper マニュアル（v5.1.1）
 
-_オフラインマニュアルは [こちらからダウンロードして下さい。](docs/KENZEN_SeaArt_Helper_Manual_v5.1.0.pdf)_
+_オフラインマニュアルは [こちらからダウンロードして下さい。](docs/KENZEN_SeaArt_Helper_Manual_v5.1.1.pdf)_
 
 **要約：SeaArt及びStable Diffusionでの、NSFW・高精度プロンプト構築と管理に特化したスタンドアロンデスクトップツールです。SQLiteによる41カテゴリの辞書マトリクス、LoRA鍛冶場、Google Gemini APIによるAIガチャ錬成を搭載しています。**
 
@@ -395,14 +398,14 @@ _オフラインマニュアルは [こちらからダウンロードして下�
 <a id = "ja_2-1"></a>
 ### 2-1. 「Cockpit」タブ（プロンプト構築の司令塔）
 
-![Cockpit_tab](images/Cockpit_tab_20260823,jpg)
+![Cockpit_tab](images/Cockpit_tab_20260823.jpg)
 
 プロンプトの編集、重み付け、並び替え、クリップボード転送を行うメイン画面です。
 
 * **辞書マトリクス表示ボタン:** 閉じてしまった辞書マトリクスウィンドウをいつでも再呼び出しできます。
 * **メインプロンプトエディタ:** タグの追記、手動編集が自由に行えるテキストエリア。
-* **重み付け機能 (0.5 ～ 1.5):** テキストを選択して **Apply Weight (tag:w)** を押すと `(tag:1.2)` の形式で重み付けされます。**Enable Weight** にチェックを入れておくと、マトリクスからタグを追加した際に自動で重み付けが適用されます。
-* **Dynamic Prompts Wrap (`{A | B | C}`):** カンマ区切りの複数タグを選択してボタンを押すと、ワイルドカード記法 `{tag1 | tag2 | tag3}` へ一括変換（または解除）します。
+* **重み付け機能 (0.5 ～ 1.5):** テキストを選択して **Apply Weight (tag:w)** を押すと `(tag:1.2)` の形式で重み付けされます。**Enable Weight** にチェックを入れておくと、マトリクスからタグを追加した際に自動で重み付けが適用されます（チェックボックスがオフの時はプルダウン操作が無効化されます）。
+* **Dynamic Prompts Wrap (`{A | B | C}`):** カンマ区切りの複数タグを選択してボタンを押すと、ワイルドカード記法 `{tag1 | tag2 | tag3}` へ一括変換（または解除）します。`ass up, face down` などのカンマを含むタグも分割されず正確に保護されます。
 * **Sort Prompts (41カテゴリ自動整列 ＆ スマート階層化):** 散らかったプロンプトを、ベースポジティブ、LoRAトリガー、および41カテゴリの並び順に沿って瞬時に整列・ソートします。
   * **選択範囲のみのソート（Selection Sort）:** エディタ内でテキストを選択（ドラッグ等）した状態でソートボタンを押すと、**選択された範囲のタグのみがカテゴリ順に整列** され、前後のプロンプトを崩さずにインプレース置換されます。
   * **BREAK構文時のLoRAトリガー自動再配置:** `BREAK` を含む複数ブロックのプロンプトにおいて、BREAK以降や末尾に追加されたLoRAトリガーワードを自動検知し、**第1ブロックの品質ポジティブタグ（`masterpiece`等）の直後（優先スコア 0.5 の位置）** へ自動移動させます。`<lora:...>` タグ本体はプロンプト最末尾へスマート配置されます。
@@ -418,14 +421,14 @@ _オフラインマニュアルは [こちらからダウンロードして下�
 <a id = "ja_2-2"></a>
 ### 2-2. 「Positive」タブ（ポジティブプロンプト管理）
 
-![Positive_tab](images/Positive_tab_20260823.jpg)
+![Positive_tab](images/Positive_tab_20260907.jpg)
 
 AIの描写クオリティを底上げするポジティブタグの管理画面です。
 
 * **手持ちストック ＆ 適用リストの2カラム構造:** 左側のストック一覧から、今回使いたいタグを選んで右側の適用リストへ転送します。
 * **生プロンプト一括インポート (Bulk Import):** 既存のカンマ区切り呪文を貼り付けるだけで、記号や重みを自動除去して一括登録できます。
 * **選択プレビュー & 順序入れ替え:** 適用リスト内で選択されたタグのみがプレビュー欄に表示され、▲/▼ボタンで出力順序を自在にソート可能。
-* **プリセット保存 ＆ 自動全選択・即時プレビュー:** よく使うポジティブタグの組み合わせを名前付きプリセットとして保存でき、**Set as Default** で次回起動時の標準プリセットに指定可能。プリセットを選択すると、適用リストへの展開と同時に **すべてのタグが自動的に全選択** され、下部のプレビュー欄にもプロンプトが即座に出力されます。マウスで再選択することなく、そのまま「`Ctrl+Shift+P`」でCockpit先頭へ送信できます（ストック追加時の重複防止ガード付き）。
+* **プリセット保存・起動時自動展開 ＆ 🔄 Call Default:** よく使うポジティブタグの組み合わせを名前付きプリセットとして保存でき、「**⭐ Set as Default**」で次回起動時の標準プリセットに指定して自動展開可能。新設された「**🔄 Call Default**」ボタンで、いつでもワンクリックでデフォルト設定を展開・復元できます。プリセットを選択すると、適用リストへの展開と同時に **すべてのタグが自動的に全選択** され、下部のプレビュー欄にもプロンプトが即座に出力されます。マウスで再選択することなく、そのまま「`Ctrl+Shift+P`」でCockpit先頭へ送信できます（ストック追加時の重複防止ガード付き）。
 * **🚀 Send Applied Tags to Cockpit Beginning (`Ctrl+Shift+P`):** 適用タグを、Cockpitプロンプトの**最先頭**へスマートに挿入します（重複検知ガード付き）。
 
 ---
@@ -433,11 +436,11 @@ AIの描写クオリティを底上げするポジティブタグの管理画面
 <a id = "ja_2-3"></a>
 ### 2-3. 「Negative」タブ（絶許ブラックリスト）
 
-![Negative_tab](images/Negative_tab_20260823.jpg)
+![Negative_tab](images/Negative_tab_20260907.jpg)
 
 破綻や不要な要素を排除するネガティブプロンプトの管理画面です。
 
-* **手持ちストック ＆ 適用リスト（自動プレビュー対応）:** ポジティブタブと同様の2カラム構成で快適に管理。ネガティブプリセットを選択すると、適用リストが自動で全選択されてプレビュー欄に即時反映され、ワンクリックでクリップボードへコピーできます。ストック追加時の重複登録も自動でスキップされます。
+* **手持ちストック ＆ 適用リスト（起動時自動展開 ＆ 🔄 Call Default）:** ポジティブタブと同様の2カラム構成で快適に管理。「**⭐ Set as Default**」で起動時の自動展開に対応し、新設された「**🔄 Call Default**」ボタンでいつでもデフォルト設定を即座に復元できます。ネガティブプリセットを選択すると、適用リストが自動で全選択されてプレビュー欄に即時反映され、ワンクリックでクリップボードへコピーできます。ストック追加時の重複登録も自動でスキップされます。
 * **ネガティブ重み付け (1.0 ～ 1.5):** プレビュー欄内の特定タグを選択し、強調したい度合いに合わせて重み付けを適用。
 * **LoRAネガティブ受信機能:** LoRAタブから転送された固有の推奨ネガティブタグを直接プレビュー欄に合流させます。
 * **クリップボード直接コピー:** 適用ネガティブプロンプトを一発でクリップボードへコピー。
@@ -447,7 +450,7 @@ AIの描写クオリティを底上げするポジティブタグの管理画面
 <a id = "ja_2-4"></a>
 ### 2-4. 「LoRA」タブ（LoRAの鍛冶場＆金庫）
 
-![LoRA_tab](images/LoRA_tab_20260823.jpg)
+![LoRA_tab](images/LoRA_tab_20260907.jpg)
 
 LoRAタグ `<lora:name:strength>` とトリガーワードの組み合わせを完全掌握する専用タブです。
 
@@ -457,6 +460,7 @@ LoRAタグ `<lora:name:strength>` とトリガーワードの組み合わせを�
 * **短縮ハッシュ自動算出:** `.safetensors` ファイルを指定するだけで、Auto V2ハッシュとモデル名を自動抽出。
 * **トリガーワード選択 ＆ 個別重み付け (1.0 ～ 1.5):** 登録されたトリガーワードから必要なものを選択し、指定の強度でラップ可能。
 * **Wrap with Name / Wrap with Hash:** WebUI向けの名前ラップ、SeaArt向けのハッシュラップをワンクリックで切り替え。
+* **LoRAプリセットの標準化（⭐ Set as Default ＆ 🔄 Call Default）:** 頻用するLoRAの組み合わせをプリセットとして保存可能。「**⭐ Set as Default**」で次回起動時にプレビュー欄へ自動展開でき、新設された「**🔄 Call Default**」ボタンでいつでも即座に復元できます。
 * **プレビュー個別制御:**
   * **Remove LoRA:** プレビュー内に存在する特定のLoRAタグおよび関連トリガーのみをピンポイントで除外。
   * **Forget LoRA:** 入力欄やチェックボックス、プレビューを一括で初期化。
@@ -471,7 +475,7 @@ LoRAタグ `<lora:name:strength>` とトリガーワードの組み合わせを�
 
 完成した傑作プロンプトを整理・保存・活用するデータベースです。
 
-* **一覧テーブル ＆ リアルタイム検索:** 番号、タイトル（Description）、プロンプトを一覧表示。検索窓からタイトルやプロンプトのキーワードで瞬時に絞り込み。
+* **一覧テーブル ＆ 選択時即時反映:** 番号、タイトル（Description）、プロンプトを一覧表示。検索窓からの瞬時絞り込みに加え、行をクリック・上下キー移動した際に即座に詳細欄へタイトルとプロンプトが反映されます。
 * **詳細・編集スプリッター ＆ 🧹 Clear Input（入力消去）:** 選択したお気に入りのタイトルとプロンプトを下部エリアで直接微調整。**Pull from Cockpit** で現在のコックピット内容をワンタッチ取得。新設された「**🧹 Clear Input / 入力消去**」ボタンにより、保存済みレコードに影響を与えずに入力欄をワンクリックでクリアできます。最大50件の登録上限ガードおよび空白正規化による重複登録防止機能を完備。
 * **新規登録・上書き更新・Undo Fav:** プロンプトの完全一致重複ガード、1行更新、誤操作を防ぐアンドゥ機能を完備。
 * **モバイル用JSON出力:** お気に入りデータをスマホ版HTMLで扱えるJSON形式として書き出し。

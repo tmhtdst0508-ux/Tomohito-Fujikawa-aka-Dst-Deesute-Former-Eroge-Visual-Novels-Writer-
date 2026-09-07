@@ -1,5 +1,5 @@
 """
-Config Manager for KENZEN SeaArt Helper v5.1.0
+Config Manager for KENZEN SeaArt Helper v5.1.1
 Handles loading, saving, and updating JSON configuration with v4.2.0 exact default data,
 BOM handling, selective export/import with Merge/Overwrite modes, and mobile memo parsing.
 """
@@ -13,8 +13,7 @@ from typing import Dict, Any, List, Optional, Tuple, Set
 
 DEFAULT_CONFIG: Dict[str, Any] = {
     "Settings": {
-        "AppName": "KENZEN SeaArt Helper v5.1.0",
-        "GeminiAPIKey": "",
+        "AppName": "KENZEN SeaArt Helper v5.1.1",
         "GachaCount": 0,
         "MaxGachaQuota": 15,
         "LastPTDate": "",
@@ -23,6 +22,9 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "AutoSortOnDone": False,
         "AutoWrapBracket": False,
         "DefaultWeight": "1.1",
+        "DefaultPositivePreset": "",
+        "DefaultNegativePreset": "",
+        "DefaultLoRAPreset": "",
     },
     "PositivePresets": {
         "REED_XXX_illustrious_SDXL": [
@@ -221,8 +223,11 @@ class ConfigManager:
                 # Check 0-byte or corrupted file
                 if os.path.getsize(self.config_path) > 0:
                     raw_data = self.read_json_safely(self.config_path)
+                    had_legacy_api_key = isinstance(raw_data, dict) and "GeminiAPIKey" in raw_data.get("Settings", {})
                     self.data = self.normalize_imported_data(raw_data)
                     self._validate_and_repair()
+                    if had_legacy_api_key:
+                        self.save()
                     return
                 else:
                     print(f"[ConfigManager] Warning: {self.config_path} is 0 bytes (corrupted).")
@@ -278,7 +283,9 @@ class ConfigManager:
         # 1. Settings
         if "Settings" in raw_data and isinstance(raw_data["Settings"], dict):
             for k, v in raw_data["Settings"].items():
-                if k == "GeminiAPIKey" and not v:
+                if k == "GeminiAPIKey":
+                    if v and str(v).strip():
+                        self.set_gemini_api_key(str(v).strip())
                     continue
                 normalized["Settings"][str(k)] = v
 
@@ -386,6 +393,12 @@ class ConfigManager:
     def _validate_and_repair(self):
         """Ensures all required top-level keys exist."""
         modified = False
+        if "Settings" in self.data and "GeminiAPIKey" in self.data["Settings"]:
+            val = str(self.data["Settings"].pop("GeminiAPIKey", "")).strip()
+            if val:
+                self.set_gemini_api_key(val)
+            modified = True
+
         for key, val in DEFAULT_CONFIG.items():
             if key not in self.data:
                 self.data[key] = json.loads(json.dumps(val))
@@ -402,13 +415,11 @@ class ConfigManager:
     def save(self):
         """Saves current configuration to JSON file atomically using a temporary file and keeps a .bak copy."""
         try:
-            # 0. Security Guard: Ensure GeminiAPIKey is NEVER saved in JSON file
-            if "Settings" in self.data and self.data["Settings"].get("GeminiAPIKey"):
-                # Migrate to registry if not already done, then purge from JSON payload
-                api_val = str(self.data["Settings"]["GeminiAPIKey"]).strip()
+            # 0. Security Guard: Ensure GeminiAPIKey is strictly stored in Windows Registry and completely purged from JSON
+            if "Settings" in self.data and "GeminiAPIKey" in self.data["Settings"]:
+                api_val = str(self.data["Settings"].pop("GeminiAPIKey", "")).strip()
                 if api_val:
                     self.set_gemini_api_key(api_val)
-                self.data["Settings"]["GeminiAPIKey"] = ""
 
             # 1. Edge-case Guard 2: Make backup of existing valid file before overwrite (must be > 10 bytes)
             if os.path.exists(self.config_path) and os.path.getsize(self.config_path) > 10:
@@ -498,9 +509,9 @@ class ConfigManager:
         except Exception as e:
             print(f"[ConfigManager] Error saving API key to registry: {e}")
 
-        # Ensure JSON never stores raw API key
-        if "Settings" in self.data and self.data["Settings"].get("GeminiAPIKey"):
-            self.data["Settings"]["GeminiAPIKey"] = ""
+        # Ensure JSON never stores raw API key or placeholder
+        if "Settings" in self.data and "GeminiAPIKey" in self.data["Settings"]:
+            self.data["Settings"].pop("GeminiAPIKey", None)
             self.save()
 
     def delete_gemini_api_key_registry(self):
@@ -531,8 +542,9 @@ class ConfigManager:
                 print(f"[ConfigManager] Error removing legacy API key from winreg: {e}")
 
         # 3. Purge from in-memory config payload
-        if "Settings" in self.data:
-            self.data["Settings"]["GeminiAPIKey"] = ""
+        if "Settings" in self.data and "GeminiAPIKey" in self.data["Settings"]:
+            self.data["Settings"].pop("GeminiAPIKey", None)
+            self.save()
 
     def get_gacha_quota(self) -> int:
         try:

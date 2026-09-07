@@ -45,6 +45,10 @@ class TabPositive(QWidget):
         btn_set_default.setToolTip("Set selected preset as startup default")
         btn_set_default.clicked.connect(self.on_set_default_preset)
 
+        btn_call_default = QPushButton("🔄 Call Default")
+        btn_call_default.setToolTip("Restore/apply startup default preset to fields / デフォルトプリセットを展開・復元")
+        btn_call_default.clicked.connect(self.on_call_default_preset)
+
         btn_delete_preset = QPushButton("Delete Preset")
         btn_delete_preset.setProperty("btnType", "danger")
         btn_delete_preset.clicked.connect(self.on_delete_preset)
@@ -53,6 +57,7 @@ class TabPositive(QWidget):
         preset_bar.addWidget(self.cmb_presets, 1)
         preset_bar.addWidget(btn_save_preset)
         preset_bar.addWidget(btn_set_default)
+        preset_bar.addWidget(btn_call_default)
         preset_bar.addWidget(btn_delete_preset)
         layout.addLayout(preset_bar)
 
@@ -184,14 +189,19 @@ class TabPositive(QWidget):
         layout.addLayout(bottom_bar)
 
         self.load_stock()
-        self.refresh_presets()
+        self.refresh_presets(load_default=True)
 
-    def refresh_presets(self, select_preset_name: str = None):
+    def refresh_presets(self, select_preset_name: str = None, load_default: bool = False):
         presets = self.config.get_positive_presets()
         self.cmb_presets.blockSignals(True)
         self.cmb_presets.clear()
         self.cmb_presets.addItem("-- Select Preset / プリセット選択 --", None)
         target_idx = 0
+        if load_default and not select_preset_name:
+            default_name = self.config.get_setting("DefaultPositivePreset", "")
+            if default_name and default_name in presets:
+                select_preset_name = default_name
+
         for idx, name in enumerate(presets.keys()):
             self.cmb_presets.addItem(name, name)
             if select_preset_name and name == select_preset_name:
@@ -215,6 +225,35 @@ class TabPositive(QWidget):
             self,
             "設定完了 / Success",
             f"プリセット '{name}' を起動時デフォルトに設定しました！\nPreset '{name}' set as startup default."
+        )
+
+    def on_call_default_preset(self):
+        default_name = self.config.get_setting("DefaultPositivePreset", "")
+        if not default_name:
+            QMessageBox.warning(
+                self,
+                "注意 / Warning",
+                "デフォルトプリセットが設定されていません。\nNo default preset has been configured.\n'⭐ Set as Default' でプリセットをデフォルト設定してください。"
+            )
+            return
+        presets = self.config.get_positive_presets()
+        if default_name not in presets:
+            QMessageBox.warning(
+                self,
+                "注意 / Warning",
+                f"設定されたデフォルトプリセット '{default_name}' が見つかりません。\nThe configured default preset '{default_name}' was not found in presets."
+            )
+            return
+        idx = self.cmb_presets.findData(default_name)
+        if idx >= 0:
+            self.cmb_presets.setCurrentIndex(idx)
+        else:
+            self.refresh_presets(select_preset_name=default_name)
+        self.on_preset_selected(self.cmb_presets.currentIndex())
+        QMessageBox.information(
+            self,
+            "復元完了 / Restored",
+            f"デフォルトプリセット '{default_name}' を展開しました！\nRestored default preset '{default_name}'."
         )
 
     def on_select_all_applied(self):
@@ -489,6 +528,8 @@ class TabPositive(QWidget):
             if name in presets:
                 del presets[name]
                 self.config.data["PositivePresets"] = presets
+                if self.config.get_setting("DefaultPositivePreset", "") == name:
+                    self.config.set_setting("DefaultPositivePreset", "")
                 self.config.save()
                 self.refresh_presets()
                 self.list_applied.clear()

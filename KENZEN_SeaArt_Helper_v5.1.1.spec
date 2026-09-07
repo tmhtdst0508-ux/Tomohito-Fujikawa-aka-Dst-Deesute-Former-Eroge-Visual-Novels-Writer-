@@ -21,7 +21,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='KENZEN_SeaArt_Helper_v5.1.0',
+    name='KENZEN_SeaArt_Helper_v5.1.1',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -41,5 +41,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='KENZEN_SeaArt_Helper_v5.1.0',
+    name='KENZEN_SeaArt_Helper_v5.1.1',
 )

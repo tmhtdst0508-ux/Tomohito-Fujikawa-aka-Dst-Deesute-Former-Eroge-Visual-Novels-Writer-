@@ -46,6 +46,14 @@ class TabLoRA(QWidget):
         btn_save_preset = QPushButton("Save LoRA Preset")
         btn_save_preset.clicked.connect(self.on_save_preset)
 
+        btn_set_default = QPushButton("⭐ Set as Default")
+        btn_set_default.setToolTip("Set selected preset as startup default")
+        btn_set_default.clicked.connect(self.on_set_default_preset)
+
+        btn_call_default = QPushButton("🔄 Call Default")
+        btn_call_default.setToolTip("Restore/apply startup default preset to preview / デフォルトプリセットを展開・復元")
+        btn_call_default.clicked.connect(self.on_call_default_preset)
+
         btn_delete_preset = QPushButton("Delete LoRA Preset")
         btn_delete_preset.setProperty("btnType", "danger")
         btn_delete_preset.clicked.connect(self.on_delete_preset)
@@ -53,6 +61,8 @@ class TabLoRA(QWidget):
         preset_bar.addWidget(lbl_preset)
         preset_bar.addWidget(self.cmb_presets, 1)
         preset_bar.addWidget(btn_save_preset)
+        preset_bar.addWidget(btn_set_default)
+        preset_bar.addWidget(btn_call_default)
         preset_bar.addWidget(btn_delete_preset)
         layout.addLayout(preset_bar)
 
@@ -260,17 +270,28 @@ class TabLoRA(QWidget):
         bottom_bar.addWidget(self.btn_send_cockpit)
         layout.addLayout(bottom_bar)
 
-        self.refresh_presets()
+        self.refresh_presets(load_default=True)
         self.load_loras()
 
-    def refresh_presets(self):
+    def refresh_presets(self, select_preset_name: str = None, load_default: bool = False):
         presets = self.config.get_lora_presets()
         self.cmb_presets.blockSignals(True)
         self.cmb_presets.clear()
         self.cmb_presets.addItem("-- Select LoRA Preset / プリセット選択 --", None)
-        for name in presets.keys():
+        target_idx = 0
+        if load_default and not select_preset_name:
+            default_name = self.config.get_setting("DefaultLoRAPreset", "")
+            if default_name and default_name in presets:
+                select_preset_name = default_name
+
+        for idx, name in enumerate(presets.keys()):
             self.cmb_presets.addItem(name, name)
+            if select_preset_name and name == select_preset_name:
+                target_idx = idx + 1
+        self.cmb_presets.setCurrentIndex(target_idx)
         self.cmb_presets.blockSignals(False)
+        if target_idx > 0:
+            self.on_preset_selected(target_idx)
 
     def load_loras(self):
         loras = self.config.get_lora_list()
@@ -538,9 +559,55 @@ class TabLoRA(QWidget):
             f"LoRAプリセット '{preset_name}' を保存しました。\nLoRA preset '{preset_name}' saved."
         )
 
+    def on_set_default_preset(self):
+        name = self.cmb_presets.currentData()
+        if not name:
+            QMessageBox.warning(
+                self,
+                "注意 / Warning",
+                "デフォルトに設定するLoRAプリセットを選択してください。\nPlease select a LoRA preset to set as default."
+            )
+            return
+        self.config.set_setting("DefaultLoRAPreset", name)
+        QMessageBox.information(
+            self,
+            "設定完了 / Success",
+            f"LoRAプリセット '{name}' を起動時デフォルトに設定しました！\nLoRA preset '{name}' set as startup default."
+        )
+
+    def on_call_default_preset(self):
+        default_name = self.config.get_setting("DefaultLoRAPreset", "")
+        if not default_name:
+            QMessageBox.warning(
+                self,
+                "注意 / Warning",
+                "デフォルトLoRAプリセットが設定されていません。\nNo default LoRA preset has been configured.\n'⭐ Set as Default' でプリセットをデフォルト設定してください。"
+            )
+            return
+        presets = self.config.get_lora_presets()
+        if default_name not in presets:
+            QMessageBox.warning(
+                self,
+                "注意 / Warning",
+                f"設定されたデフォルトLoRAプリセット '{default_name}' が見つかりません。\nThe configured default LoRA preset '{default_name}' was not found in presets."
+            )
+            return
+        idx = self.cmb_presets.findData(default_name)
+        if idx >= 0:
+            self.cmb_presets.setCurrentIndex(idx)
+        else:
+            self.refresh_presets(select_preset_name=default_name)
+        self.on_preset_selected(self.cmb_presets.currentIndex())
+        QMessageBox.information(
+            self,
+            "復元完了 / Restored",
+            f"デフォルトLoRAプリセット '{default_name}' を展開しました！\nRestored default LoRA preset '{default_name}'."
+        )
+
     def on_preset_selected(self, index: int):
         name = self.cmb_presets.currentData()
         if not name:
+            self.txt_preview.clear()
             return
         presets = self.config.get_lora_presets()
         if name in presets:
@@ -555,14 +622,19 @@ class TabLoRA(QWidget):
         ans = QMessageBox.question(
             self,
             "削除確認 / Confirm Delete",
-            f"プリセット '{name}' を削除しますか？\nDelete LoRA preset '{name}'?"
+            f"プリセット '{name}' を削除しますか？\nDelete LoRA preset '{name}'?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
         )
         if ans == QMessageBox.Yes:
             presets = self.config.get_lora_presets()
             if name in presets:
                 del presets[name]
+                if self.config.get_setting("DefaultLoRAPreset", "") == name:
+                    self.config.set_setting("DefaultLoRAPreset", "")
                 self.config.save_lora_presets(presets)
                 self.refresh_presets()
+                self.txt_preview.clear()
 
     def get_current_lora_prompt(self) -> str:
         """Returns sanitized generated LoRA tags strictly from txt_preview."""

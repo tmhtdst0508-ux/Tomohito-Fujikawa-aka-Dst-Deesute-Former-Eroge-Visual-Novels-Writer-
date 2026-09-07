@@ -291,24 +291,58 @@ class PromptEngine:
         return f"({tag}:{weight:.1f})"
 
     def wrap_dynamic_prompts(self, selected_text: str) -> str:
-        """Converts comma-separated tags 'a, b, c' into '{a | b | c}', or unwraps '{a | b | c}' into 'a, b, c'."""
+        """
+        Converts tags into '{A | B}', or unwraps back to comma-separated tags.
+        Protects comma-containing tags (e.g. 'ass up, face down') from being mistakenly split into 'ass up | face down'.
+        """
         text = selected_text.strip()
         if not text:
             return selected_text
 
+        # 1. Unwrapping if already wrapped with { ... }
         if text.startswith("{") and text.endswith("}"):
             inner = text[1:-1].strip()
-            parts = [p.strip() for p in inner.split("|") if p.strip()]
-            return ", ".join(parts)
-        
-        if "," in text:
-            parts = [p.strip() for p in text.split(",") if p.strip()]
-            return "{" + " | ".join(parts) + "}"
-        elif "|" in text:
+            if "|" in inner:
+                parts = [p.strip() for p in inner.split("|") if p.strip()]
+                return ", ".join(parts)
+            else:
+                return inner
+
+        # 2. Check if selected text is a single known tag (with or without weight brackets)
+        tag_core = text
+        m_weight = re.match(r"^\((.+?):[0-9.]+\)$", tag_core)
+        if m_weight:
+            tag_core = m_weight.group(1).strip()
+
+        if hasattr(self.db, "is_known_tag") and self.db.is_known_tag(tag_core):
+            return "{" + text + "}"
+
+        # 3. If text already contains '|', wrap choices as is
+        if "|" in text:
             parts = [p.strip() for p in text.split("|") if p.strip()]
             return "{" + " | ".join(parts) + "}"
-        else:
-            return "{" + text + "}"
+
+        # 4. Multi-tag separation with protection for comma-containing DB tags
+        if "," in text:
+            comma_tags = self.db.get_comma_tags() if hasattr(self.db, "get_comma_tags") else []
+            sentinel = "___KENZEN_COMMA___"
+            protected_text = text
+            for ct in comma_tags:
+                ct_pattern = re.escape(ct).replace(r"\,", r"\s*,\s*")
+                def replace_comma(m):
+                    return re.sub(r"\s*,\s*", sentinel, m.group(0))
+                protected_text = re.sub(ct_pattern, replace_comma, protected_text, flags=re.IGNORECASE)
+
+            raw_parts = [p.strip() for p in protected_text.split(",") if p.strip()]
+            restored_parts = [p.replace(sentinel, ", ").strip() for p in raw_parts if p.strip()]
+
+            if len(restored_parts) > 1:
+                return "{" + " | ".join(restored_parts) + "}"
+            elif len(restored_parts) == 1:
+                return "{" + restored_parts[0] + "}"
+
+        # 5. Default fallback: wrap single item
+        return "{" + text + "}"
 
     def sort_prompt(self, prompt: str, registered_lora_triggers: Optional[Set[str]] = None) -> str:
         """

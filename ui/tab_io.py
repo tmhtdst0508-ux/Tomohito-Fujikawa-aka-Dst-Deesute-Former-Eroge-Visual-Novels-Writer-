@@ -176,7 +176,7 @@ class TabIO(QWidget):
         info_layout.setContentsMargins(12, 10, 12, 10)
         info_layout.setSpacing(4)
 
-        lbl_app = QLabel("<b>KENZEN SeaArt Helper v5.1.0 (Python Edition)</b> — Stable Diffusion Prompt Engineering Assistant")
+        lbl_app = QLabel("<b>KENZEN SeaArt Helper v5.1.1 (Python Edition)</b> — Stable Diffusion Prompt Engineering Assistant")
         lbl_app.setStyleSheet("color: #1E293B; font-size: 12px;")
         info_layout.addWidget(lbl_app)
 

@@ -1,15 +1,17 @@
 {
   "Settings": {
-    "AppName": "KENZEN SeaArt Helper v5.0.0",
-    "GeminiAPIKey": "",
+    "AppName": "KENZEN SeaArt Helper v5.1.1",
     "GachaCount": 0,
     "MaxGachaQuota": 15,
-    "LastPTDate": "2026-08-26",
+    "LastPTDate": "2026-09-06",
     "SurpriseMe": false,
     "SurpriseLevel": "SFW",
     "AutoSortOnDone": false,
     "AutoWrapBracket": false,
-    "DefaultWeight": "1.1"
+    "DefaultWeight": "1.1",
+    "DefaultPositivePreset": "",
+    "DefaultNegativePreset": "",
+    "DefaultLoRAPreset": ""
   },
   "PositivePresets": {
     "REED_XXX_illustrious_SDXL": [

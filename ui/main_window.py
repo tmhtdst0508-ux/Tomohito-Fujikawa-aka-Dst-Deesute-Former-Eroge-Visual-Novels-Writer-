@@ -43,8 +43,8 @@ class MainWindow(QMainWindow):
         self.prompt_engine = PromptEngine(self.db)
         self.gemini_api = GeminiAPI(self.config.get_setting("GeminiAPIKey", ""), self.db)
 
-        # 2. Window & Styles
-        self.setWindowTitle("KENZEN SeaArt Helper v5.1.0")
+        # 2. Main Cockpit Setup
+        self.setWindowTitle("KENZEN SeaArt Helper v5.1.1")
         self.resize(920, 680)
         self.setStyleSheet(MAIN_STYLESHEET)
 
@@ -147,7 +147,8 @@ class MainWindow(QMainWindow):
         # Status bar
         self.status_bar = QStatusBar(self)
         self.setStatusBar(self.status_bar)
-        self.status_bar.showMessage("KENZEN SeaArt Helper v5.1.0 - Ready (41 Categories / 1,493 Tags Loaded)")
+        total_tags = sum(len(tags) for tags in self.db._tags_by_category_cache.values())
+        self.status_bar.showMessage(f"KENZEN SeaArt Helper v5.1.1 - Ready (41 Categories / {total_tags:,} Tags Loaded)")
 
         # Global Shortcuts (Window-level context so they work across all tabs and focused inputs):
         # Ctrl+Shift+P for inserting Positive Prompt from any tab

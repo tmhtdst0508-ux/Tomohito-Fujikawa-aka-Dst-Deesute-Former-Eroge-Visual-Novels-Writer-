@@ -224,6 +224,31 @@ class DBManager:
     def translate_en_to_jp(self, en_prompt: str) -> Optional[str]:
         return self._en_to_jp_map.get(en_prompt.strip().lower())
 
+    def is_known_tag(self, text: str) -> bool:
+        """Checks if the given English text matches any known tag in the database (case- and whitespace-insensitive)."""
+        if not text:
+            return False
+        import re
+        norm = re.sub(r"\s+", " ", text.strip().lower()).replace(", ", ",").replace(",", ", ")
+        if norm in self._en_to_jp_map:
+            return True
+        # Compare without spaces/underscores
+        raw_key = text.strip().lower().replace(" ", "").replace("_", "")
+        for en_key in self._en_to_jp_map:
+            if en_key.replace(" ", "").replace("_", "") == raw_key:
+                return True
+        return False
+
+    def get_comma_tags(self) -> List[str]:
+        """Returns all registered English tags that contain commas, sorted by length descending."""
+        if not hasattr(self, "_comma_tags_cache") or not self._comma_tags_cache:
+            self._comma_tags_cache = sorted(
+                [en for en in self._en_to_jp_map.keys() if "," in en],
+                key=len,
+                reverse=True
+            )
+        return self._comma_tags_cache
+
     def get_sample_prompts(self) -> List[Dict[str, Any]]:
         """
         Retrieves sample prompts from SQLite 'sample_prompts' table (id, title, prompt, comment).

@@ -38,7 +38,7 @@ class TabCockpit(QWidget):
         top_bar.setContentsMargins(2, 0, 2, 0)
         top_bar.setSpacing(12)
 
-        lbl_title = QLabel("🎨 <b style='color: #1E293B; font-size: 13px; font-family: Segoe UI, sans-serif;'>KENZEN SeaArt Helper</b> <span style='color: #475569; font-size: 11px; background-color: #E2E8F0; padding: 2px 6px; border-radius: 4px; font-weight: 600;'>v5.1.0</span>")
+        lbl_title = QLabel("🎨 <b style='color: #1E293B; font-size: 13px; font-family: Segoe UI, sans-serif;'>KENZEN SeaArt Helper</b> <span style='color: #475569; font-size: 11px; background-color: #E2E8F0; padding: 2px 6px; border-radius: 4px; font-weight: 600;'>v5.1.1</span>")
         lbl_title.setStyleSheet("padding: 2px;")
 
         btn_matrix = QPushButton("📖 Show Dictionary Matrix (辞書マトリクス表示)")
@@ -72,11 +72,13 @@ class TabCockpit(QWidget):
         for w in ["0.5", "0.6", "0.7", "0.8", "0.9", "1.1", "1.2", "1.3", "1.4", "1.5"]:
             self.cmb_weight.addItem(w)
         self.cmb_weight.setCurrentText(self.config.get_setting("DefaultWeight", "1.1"))
+        self.cmb_weight.setEnabled(False)
 
         self.btn_apply_weight = QPushButton("Apply Weight (tag:w)")
         self.btn_apply_weight.setEnabled(False)
         self.btn_apply_weight.clicked.connect(self.on_apply_weight)
         self.chk_weight.toggled.connect(self.btn_apply_weight.setEnabled)
+        self.chk_weight.toggled.connect(self.cmb_weight.setEnabled)
 
         # Dynamic Prompts Wrap Button {A | B | C}
         btn_wrap = QPushButton("Wrap Dynamic Prompts {A | B | C}")
