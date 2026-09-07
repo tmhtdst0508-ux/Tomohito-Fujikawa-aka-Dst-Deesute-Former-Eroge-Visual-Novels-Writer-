@@ -77,6 +77,8 @@ The story-driven adult AI CG collections created using KENZEN SeaArt Helper.
 
  - [5. License](#en_5)
 
+ - [6. Troubleshooting & FAQ](#en_6)
+
  ---
 <a id = "whatsnew"></a>
 ## 🚀 Release v5.1.1: Precision & Default Presets Update! 🎯🔄✨
@@ -281,6 +283,20 @@ The source code is licensed under the MIT License.
 The `tags.db` database is provided under a separate license and is not covered by the MIT License.
 See [LICENSE-DATA.md](LICENSE-DATA.md) for details.
 
+<a id = "en_6"></a>
+## 6. Troubleshooting & FAQ
+
+### Antivirus or Windows SmartScreen Warnings (False Positives)
+
+When downloading or running this application, your security software (such as ESET, Avast, or Windows SmartScreen) may flag it as "Suspicious" or unrecognized.
+
+**This is a false positive.**
+Because this software is built and packaged using Python and PyInstaller without an expensive commercial code-signing certificate, certain heuristic scanners automatically flag newly released binaries as unfamiliar files.
+
+* **Digital Signature:** All official binaries are digitally signed by the developer.
+* **Integrity Verification:** Every release is scanned on VirusTotal, and official SHA-256 checksums are published. Please check the specific release notes on the [Releases Page](https://github.com/tmhtdst0508-ux/KENZEN-SeaArt-Helper/releases) to verify the scan results and file hashes before reporting an issue.
+* **Workaround:** If the file is quarantined or blocked, you may safely add it to your antivirus exclusion list or select "More info" -> "Run anyway" in Windows SmartScreen.
+
 ---
 
 <a id="japanese"></a>
@@ -348,6 +364,8 @@ KENZEN SeaArt Helperを使用して制作した、物語連動型AI成人向けC
 - [4. 免責事項・連絡先](#ja_4)
 
  - [5. ライセンス](#ja_5)
+
+ - [6. トラブルシューティング & FAQ](#ja_6)
 
 <a id = "whatsnew_jp"></a>
 ## 🚀 【v5.1.1 リリース！】: プリセット自動展開＆高精度デバッグアップデート！🎯🔄✨
@@ -556,6 +574,20 @@ KENZEN SeaArt Helper のソースコードには MIT License が適用されま�
 `tags.db` には別途独自ライセンスが適用されます。
 
 詳細は [LICENSE-DATA.md](LICENSE-DATA.md) をご確認ください。
+
+<a id = "ja_6"></a>
+## 6. トラブルシューティング & FAQ
+
+### セキュリティソフトや Windows SmartScreen による警告について（誤検知への対応）
+
+本アプリのダウンロード時や起動時に、セキュリティソフト（ESET、Avastなど）や Windows SmartScreen から「疑わしいファイル」「認識されないアプリ」として警告が表示されたり、ファイルが隔離される場合があります。
+
+**これらはすべて誤検知（False Positive）によるものです。**  
+本ソフトウェアは Python (PyInstaller) を用いてビルド・パッケージングされており、高額な市販コードサイニング証明書を使用していないため、一部のセキュリティソフトの推測検知（ヒューリスティック機能）によって「未知の新規バイナリ」として機械的にフラグ付けされることがあります。
+
+* **デジタル署名の付与:** 公式配布バイナリには、すべて開発者によるデジタル署名を適用しています。
+* **安全性の検証:** 各バージョンは公開前に必ず VirusTotal にてスキャンを実施し、公式な SHA-256 チェックサムを公開しています。スキャン結果の詳細やハッシュ値については、各バージョンの [Releases ページ](https://github.com/tmhtdst0508-ux/KENZEN-SeaArt-Helper/releases) をご確認ください。
+* **対処方法:** ファイルがブロックされたり隔離された場合は、セキュリティソフトの検出除外（ホワイトリスト）に登録するか、Windows SmartScreen の「詳細情報」をクリックして「実行」を選択してください。
 
 
 **さあ、進化した独立コックピットで、良きKENZENなるAIライフを！😊**
